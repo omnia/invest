@@ -29,6 +29,11 @@ The method uses iterative deepening branch and bound search method.
 Each combinations of assets score is calculated giving an upper bound
 to prune combinations.
 
+### Data source
+
+Getting stock historical data via API from
+[alphavantage.co](https://www.alphavantage.co/documentation/)
+
 ### Score calculation
 
 < To Be Described >
