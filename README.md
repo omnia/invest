@@ -1,14 +1,14 @@
-# Omnia Portfolio
+# Omnia Invest
 
-Omnia Portfolio gives the optimal diversed portfolio given
-a investors preference and risk averse.
+Omnia Invest gives the optimal diversed portfolio given
+a investors criteria and risk averse factor.
 
-Given a data of monthly returns for N assets, Omnia Portfolio will search for
+Given a data of daily returns for N assets, Omnia Invest will search for
 the optimal portfolio of n <= N assets.
 
 ## Description
 
-### Portfolio constraints
+### Investor's criteria
 
 Investor can provide a set of constraints how the portfolio should be
 structured:
@@ -25,14 +25,12 @@ structured:
 
 ### Search Method
 
-The method uses iterative deepening branch and bound search method.
-Each combinations of assets score is calculated giving an upper bound
-to prune combinations.
+The method uses iterative deepening depth first branch and bound search method.
+Each combinations of assets score is calculated giving an upper bound to prune combinations.
 
 ### Data source
 
-Getting stock historical data via API from
-[alphavantage.co](https://www.alphavantage.co/documentation/)
+CSV files for N Icelandic stocks from http://www.nasdaqomxnordic.com/shares/historicalprices
 
 ### Score calculation
 

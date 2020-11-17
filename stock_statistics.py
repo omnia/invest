@@ -2,6 +2,7 @@ from datetime import datetime
 import statistics as stats
 from stock import Stock
 import numpy as np
+import math
 
 
 class StockStatistics:
@@ -30,10 +31,12 @@ class StockStatistics:
     ones = np.ones(len(returns))
     grossReturns = ones + returns
 
+    # Annualized statistics
     stock.setStatistics(logGeoMean(
-        grossReturns), stats.pstdev(returns))
+        grossReturns) ** 365 - 1, stats.pstdev(returns) * math.sqrt(250))
 
 
 def logGeoMean(data):
+  # Using log version of geometric mean to avoid overflow
   a = np.log(data)
   return np.exp(a.sum()/len(a))
