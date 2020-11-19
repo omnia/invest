@@ -1,8 +1,11 @@
-from datetime import datetime
-import statistics as stats
-from stock import Stock
 import numpy as np
 import math
+from scipy.stats import pearsonr
+from datetime import datetime
+import statistics as stats
+
+from stock import Stock
+import utils
 
 
 class StockStatistics:
@@ -14,7 +17,7 @@ class StockStatistics:
     """
     self.years = years
 
-  def calculate(self, stockData, stock):
+  def getStockBasicStats(self, stockData, stock):
     """ Calculates stock's expected return and standard deviation
     from stock's historical data, optionally filtered by self.years.
     """
@@ -32,11 +35,34 @@ class StockStatistics:
     grossReturns = ones + returns
 
     # Annualized statistics
-    stock.setStatistics(logGeoMean(
-        grossReturns) ** 365 - 1, stats.pstdev(returns) * math.sqrt(250))
+    stock.price = targetData[0, 1]
+    stock.expectedReturn = utils.logGeoMean(grossReturns) ** 365 - 1
+    stock.standardDeviation = stats.pstdev(returns) * math.sqrt(250)
 
+    return targetData[:, 1]
 
-def logGeoMean(data):
-  # Using log version of geometric mean to avoid overflow
-  a = np.log(data)
-  return np.exp(a.sum()/len(a))
+  def correlation(self, stocksData):
+    """ Returns correlation coefficient dictionary for any two stocks.
+    :param: stocksData - Dictionary where the key is the stock symbol
+            and value is array of stock return
+    """
+    correlations = {}
+    for key in stocksData.keys():
+      for otherKey in stocksData.keys():
+        if key == otherKey:
+          continue
+
+        key1 = f"{key}-{otherKey}"
+        key2 = f"{otherKey}-{key}"
+
+        if key1 in correlations.keys() or key2 in correlations.keys():
+          continue
+
+        if len(stocksData[key]) > len(stocksData[otherKey]):
+          stocksData[key] = stocksData[key][0:len(stocksData[otherKey])]
+        elif len(stocksData[key]) < len(stocksData[otherKey]):
+          stocksData[otherKey] = stocksData[otherKey][0:len(stocksData[key])]
+
+        correlations[key1] = pearsonr(stocksData[key], stocksData[otherKey])[0]
+
+    return correlations

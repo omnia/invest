@@ -4,9 +4,6 @@ class Stock:
     self.symbol = symbol
     self.name = name
     self.category = category
+    self.price = 0.0
     self.expectedReturn = 0.0
     self.standardDeviation = 0.0
-
-  def setStatistics(self, exReturn, std):
-    self.expectedReturn = exReturn
-    self.standardDeviation = std

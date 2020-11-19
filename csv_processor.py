@@ -22,21 +22,24 @@ class CsvProcessor:
 
     dataFiles = list(pathlib.Path().glob(self.path))
 
-    self.logger.debug(f"Reading data from {len(dataFiles)}")
-
-    stocks = []
+    stocks = {}
+    stocksData = {}
     for filePath in dataFiles:
       self.logger.debug(f"Reading data from {filePath}")
       stock = self.initStockMetadata(filePath)
       stockData = pd.read_csv(filePath, sep=';', skiprows=1, usecols=[
           'Date', 'Closing price'], parse_dates=['Date'],
           dtype={'Closing price': np.float64}, decimal=',')
-      self.stockStatistics.calculate(stockData.to_numpy(), stock)
-      stocks.append(stock)
+      stockData = self.stockStatistics.getStockBasicStats(
+          stockData.to_numpy(), stock)
+      stocks[stock.symbol] = stock
+      stocksData[stock.symbol] = stockData
 
-    self.logger.info(f"Processed {len(dataFiles)}")
+    correlation = self.stockStatistics.correlation(stocksData)
 
-    return stocks
+    self.logger.info(f"Processed {len(dataFiles)} data files")
+
+    return stocks, correlation
 
   def initStockMetadata(self, filePath):
     stock = None
